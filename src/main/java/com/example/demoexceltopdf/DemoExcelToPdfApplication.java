@@ -12,13 +12,4 @@ public class DemoExcelToPdfApplication {
         SpringApplication.run(DemoExcelToPdfApplication.class, args);
     }
 
-    @Bean
-    public String generateReport(final EmployeeReportService employeeReportService) {
-        String msg = employeeReportService.generateReport();
-
-        System.out.println(msg);
-
-        return msg;
-    }
-
 }
