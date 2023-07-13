@@ -1,5 +1,6 @@
 package com.example.demoexceltopdf.controller;
 
+import com.example.demoexceltopdf.dto.ReqBody;
 import com.example.demoexceltopdf.service.EmployeeReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,9 +17,9 @@ public class GenerateReportController {
     @Autowired
     private EmployeeReportService employeeReportService;
 
-    @GetMapping("/generate-report/{fileName}/{reportId}")
-    public ResponseEntity<?> generateReport(@PathVariable String fileName, @RequestBody String filePath, @PathVariable int reportId) {
-        String msg = employeeReportService.generateReport(fileName, filePath, reportId);
+    @GetMapping("/generate-report")
+    public ResponseEntity<?> generateReport(@RequestBody ReqBody reqBody) {
+        String msg = employeeReportService.generateReport(reqBody.getFileName(), reqBody.getFilePath(), reqBody.getReportId());
         return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 
