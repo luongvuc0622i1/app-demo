@@ -2,8 +2,10 @@ package com.example.demoexceltopdf.service;
 
 import com.example.demoexceltopdf.dto.Employee;
 import com.example.demoexceltopdf.dto.ExcelEmployee;
+import com.example.demoexceltopdf.dto.ReportItem;
 import com.poiji.bind.Poiji;
 import net.sf.jasperreports.engine.data.ExcelDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -25,6 +27,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Service
 public class EmployeeReportService {
+    private String reportPath = "C:\\Users\\dev\\Downloads\\Report\\";
 
     public String generateReport(String fileName, String filePath, int reportId) {
 
@@ -37,27 +40,31 @@ public class EmployeeReportService {
         }
 
         try (InputStream in = url.openStream()) {
-            Files.copy(in, Paths.get("C:\\Users\\dev\\Downloads\\Report\\aaa.xlsx"));
+            Files.copy(in, Paths.get(".\\aaa.xlsx"));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        File file = new File("C:\\Users\\dev\\Downloads\\Report\\aaa.xlsx");
+        File file = new File(".\\aaa.xlsx");
 
         List<ExcelEmployee> invoices = Poiji.fromExcel(file, ExcelEmployee.class);
+
+        file.delete();
 
         List<Employee> empList = new ArrayList<>();
 
         String reportName = "";
-        if (reportId == 1) {
-            reportName = "employee-rpt";
+        ReportItemService reportItemService = new ReportItemService();
+        List<ReportItem> items = reportItemService.findAll();
+        for (ReportItem reportItem: items) {
+            if (reportItem.getId() == reportId) {
+                reportName = reportItem.getName();
+            }
         }
 
         try {
 
-            String reportPath = "C:\\Users\\dev\\Downloads\\Report";
-
             // Compile the Jasper report from .jrxml to .japser
-            JasperReport jasperReport = JasperCompileManager.compileReport(reportPath + "\\"+reportName+".jrxml");
+            JasperReport jasperReport = JasperCompileManager.compileReport(reportPath + reportName + ".jrxml");
 
             for (ExcelEmployee e : invoices) {
                 Employee empl = new Employee(e.id, e.name, e.oraganization, e.designation, e.salary);
@@ -79,7 +86,7 @@ public class EmployeeReportService {
                     jrBeanCollectionDataSource);
 
             // Export the report to a PDF file
-            JasperExportManager.exportReportToPdfFile(jasperPrint, reportPath + "\\"+fileName+".pdf");
+            JasperExportManager.exportReportToPdfFile(jasperPrint, reportPath + fileName + ".pdf");
 
             System.out.println("Done");
 
