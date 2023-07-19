@@ -5,7 +5,6 @@ import com.example.demoexceltopdf.dto.ExcelEmployee;
 import com.example.demoexceltopdf.dto.ReportItem;
 import com.example.demoexceltopdf.dto.ResponseData;
 import com.poiji.bind.Poiji;
-import net.sf.jasperreports.engine.data.ExcelDataSource;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
@@ -23,7 +22,6 @@ import java.util.*;
 import java.util.List;
 
 import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -31,7 +29,6 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Service
 public class EmployeeReportService {
-    private String reportPath = "C:\\Users\\dev\\Downloads\\Report\\";
 
     public ResponseData generateReport(String fileName, String filePath, int reportId) {
         JRPdfExporter exporter = new JRPdfExporter();
@@ -70,7 +67,7 @@ public class EmployeeReportService {
         try {
 
             // Compile the Jasper report from .jrxml to .japser
-            JasperReport jasperReport = JasperCompileManager.compileReport(reportPath + reportName + ".jrxml");
+            JasperReport jasperReport = JasperCompileManager.compileReport(".\\jrxml\\" + reportName + ".jrxml");
 
             for (ExcelEmployee e : invoices) {
                 Employee empl = new Employee(e.id, e.name, e.oraganization, e.designation, e.salary);
