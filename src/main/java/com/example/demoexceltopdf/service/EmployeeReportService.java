@@ -3,11 +3,15 @@ package com.example.demoexceltopdf.service;
 import com.example.demoexceltopdf.dto.Employee;
 import com.example.demoexceltopdf.dto.ExcelEmployee;
 import com.example.demoexceltopdf.dto.ReportItem;
+import com.example.demoexceltopdf.dto.ResponseData;
 import com.poiji.bind.Poiji;
 import net.sf.jasperreports.engine.data.ExcelDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +33,9 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 public class EmployeeReportService {
     private String reportPath = "C:\\Users\\dev\\Downloads\\Report\\";
 
-    public String generateReport(String fileName, String filePath, int reportId) {
+    public ResponseData generateReport(String fileName, String filePath, int reportId) {
+        JRPdfExporter exporter = new JRPdfExporter();
+        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
 
         URL url = null;
 
@@ -74,8 +80,6 @@ public class EmployeeReportService {
             // Get your data source
             JRBeanCollectionDataSource jrBeanCollectionDataSource = new JRBeanCollectionDataSource(empList);
 
-            ExcelDataSource excelDataSource;
-
             // Add parameters
             Map<String, Object> parameters = new HashMap<>();
 
@@ -85,16 +89,15 @@ public class EmployeeReportService {
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters,
                     jrBeanCollectionDataSource);
 
-            // Export the report to a PDF file
-            JasperExportManager.exportReportToPdfFile(jasperPrint, reportPath + fileName + ".pdf");
+            exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
 
-            System.out.println("Done");
-
-            return "Report successfully generated @path= " + reportPath;
+            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(byteArrayOutputStream));
+            exporter.exportReport();
+            return new ResponseData(byteArrayOutputStream.toByteArray());
 
         } catch (Exception e) {
             e.printStackTrace();
-            return e.getMessage();
+            return null;
         }
     }
 }
