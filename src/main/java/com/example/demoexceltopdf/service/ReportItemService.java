@@ -14,8 +14,9 @@ public class ReportItemService {
 
     static {
         items = new HashMap<>();
-        items.put(1, new ReportItem(1, "employee-rpt", "Employee Report"));
-        items.put(2, new ReportItem(2, "student-rpt", "Student Report"));
+        items.put(1, new ReportItem(1, "employee-rpt", "Employee Report", 1));
+        items.put(2, new ReportItem(2, "student-rpt", "Student Report", 0));
+        items.put(3, new ReportItem(3, "company-rpt", "Company Report", 1));
     }
 
     public List<ReportItem> findAll() {

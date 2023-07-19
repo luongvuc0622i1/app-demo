@@ -3,14 +3,16 @@ package com.example.demoexceltopdf.dto;
 public class ReportItem {
     private int id;
     private String name;
-    private String Description;
+    private String description;
+    private int status;
 
     public ReportItem() {}
 
-    public ReportItem(int id, String name, String description) {
+    public ReportItem(int id, String name, String description, int status) {
         this.id = id;
         this.name = name;
-        Description = description;
+        this.description = description;
+        this.status = status;
     }
 
     public int getId() {
@@ -30,10 +32,18 @@ public class ReportItem {
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        this.description = description;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int id) {
+        this.status = status;
     }
 }
